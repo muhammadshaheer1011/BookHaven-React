@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { BookProvider } from "./context/BookContext";
 import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
