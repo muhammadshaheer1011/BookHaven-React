@@ -1,66 +1,43 @@
-import { createContext, useContext, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { useAuth } from "./AuthContext";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const BookContext = createContext();
 
 export function BookProvider({ children }) {
-  const { user, setUser } = useAuth(); // Access logged-in user
+  const [books, setBooks] = useState([]);
 
-  const [books, setBooks] = useState([
-    { id: "1", title: "The Great Gatsby", author: "F. Scott Fitzgerald", reviews: [] },
-    { id: "2", title: "1984", author: "George Orwell", reviews: [] },
-    { id: "3", title: "To Kill a Mockingbird", author: "Harper Lee", reviews: [] },
-  ]);
-
-  // Add Book (Only if logged in)
-  const addBook = (title, author) => {
-    if (!user) {
-      alert("You must be logged in to add books.");
-      return;
-    }
-    const newBook = { id: uuidv4(), title, author, reviews: [] };
-    setBooks([...books, newBook]);
-  };
-
-// Function to add a review to a book (include username)
-const addReview = (bookId, reviewText) => {
-    if (!user) {
-      alert("You must be logged in to add reviews.");
-      return;
-    }
-    if (!reviewText.trim()) return;
-  
-    const newReview = { username: user.username, text: reviewText }; // Store username and review text
-  
-    setBooks((prevBooks) =>
-      prevBooks.map((book) =>
-        book.id === bookId
-          ? { ...book, reviews: [...book.reviews, newReview] }
-          : book
-      )
-    );
-  };
-  
-
-  // Toggle Favorite (Only if logged in, and store per user)
-  const toggleFavorite = (bookId) => {
-    if (!user) {
-      alert("You must be logged in to add favorites.");
-      return;
-    }
+  // Load books from localStorage OR use initial hardcoded books
+  useEffect(() => {
+    const storedBooks = JSON.parse(localStorage.getItem("books"));
     
-    const updatedFavorites = user.favorites.includes(bookId)
-      ? user.favorites.filter((id) => id !== bookId) // Remove favorite
-      : [...user.favorites, bookId]; // Add favorite
+    if (storedBooks && storedBooks.length > 0) {
+      setBooks(storedBooks);
+    } else {
+      const defaultBooks = [
+        { id: "1", title: "The Great Gatsby", author: "F. Scott Fitzgerald", description: "A classic novel set in the Roaring Twenties." },
+        { id: "2", title: "To Kill a Mockingbird", author: "Harper Lee", description: "A novel about racial injustice in the Deep South." },
+        { id: "3", title: "1984", author: "George Orwell", description: "A dystopian novel about totalitarian government control." },
+      ];
+      setBooks(defaultBooks);
+      localStorage.setItem("books", JSON.stringify(defaultBooks));
+    }
+  }, []);
 
-    const updatedUser = { ...user, favorites: updatedFavorites };
-    setUser(updatedUser);
-    localStorage.setItem(user.username, JSON.stringify(updatedFavorites)); // Store favorites per user
+  // Function to add a new book with validation
+  const addBook = (title, author, description) => {
+    if (!title.trim() || !author.trim() || !description.trim()) {
+      alert("All fields are required!");
+      return;
+    }
+
+    const newBook = { id: Date.now().toString(), title, author, description };
+    const updatedBooks = [...books, newBook];
+    
+    setBooks(updatedBooks);
+    localStorage.setItem("books", JSON.stringify(updatedBooks));
   };
 
   return (
-    <BookContext.Provider value={{ books, addBook, addReview, toggleFavorite, favorites: user?.favorites || [] }}>
+    <BookContext.Provider value={{ books, addBook }}>
       {children}
     </BookContext.Provider>
   );

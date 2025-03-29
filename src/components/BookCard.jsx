@@ -3,7 +3,9 @@ import { useBook } from "../context/BookContext";
 
 function BookCard({ book }) {
   const { toggleFavorite, favorites } = useBook();
-  const isFavorite = favorites.includes(book.id);
+
+  // Ensure favorites is an array before using .includes()
+  const isFavorite = Array.isArray(favorites) && favorites.includes(book.id);
 
   return (
     <div className="book-card">

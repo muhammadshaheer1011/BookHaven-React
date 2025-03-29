@@ -8,12 +8,30 @@ function BookForm() {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [description, setDescription] = useState("");
+  const [error, setError] = useState(""); // State for validation message
 
+  // Prevent access if not logged in
   if (!user) return <p><strong>🔒 Login to add a new book.</strong></p>;
+
+  // Function to handle book submission
+  const handleAddBook = () => {
+    if (!title.trim() || !author.trim() || !description.trim()) {
+      setError("⚠️ All fields are required!");
+      return;
+    }
+
+    addBook(title, author, description);
+    setTitle("");
+    setAuthor("");
+    setDescription("");
+    setError(""); // Clear error after successful submission
+  };
 
   return (
     <div>
       <h2>Add a New Book</h2>
+      {error && <p style={{ color: "red", fontWeight: "bold" }}>{error}</p>} {/* Error Message */}
+      
       <input
         type="text"
         placeholder="Book Title"
@@ -34,16 +52,7 @@ function BookForm() {
         onChange={(e) => setDescription(e.target.value)}
         required
       ></textarea>
-      <button onClick={() => {
-        if (title.trim() && author.trim() && description.trim()) {
-          addBook(title, author, description);
-          setTitle("");
-          setAuthor("");
-          setDescription("");
-        }
-      }}>
-        Add Book
-      </button>
+      <button onClick={handleAddBook}>Add Book</button>
     </div>
   );
 }

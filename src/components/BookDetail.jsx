@@ -1,37 +1,36 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useBook } from "../context/BookContext"; // Import Book Context
+import { useBook } from "../context/BookContext";
 
 function BookDetail() {
   const { id } = useParams();
   const { user } = useAuth();
-  const { books } = useBook(); // Get books from context
+  const { books } = useBook();
   const [book, setBook] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [reviewText, setReviewText] = useState("");
 
-  // Fetch Book Details
+  // Find book when books list updates
   useEffect(() => {
-    const mockBooks = [
-      { id: "1", title: "The Great Gatsby", author: "F. Scott Fitzgerald", description: "A classic novel set in the Roaring Twenties." },
-      { id: "2", title: "To Kill a Mockingbird", author: "Harper Lee", description: "A novel about racial injustice in the Deep South." },
-      { id: "3", title: "1984", author: "George Orwell", description: "A dystopian novel about totalitarian government control." },
-    ];
+    if (books.length > 0) {
+      const foundBook = books.find((b) => b.id === id);
+      setBook(foundBook || null);
+    }
+  }, [books, id]);
 
-    // First check in mockBooks, then check in added books
-    let foundBook = mockBooks.find((b) => b.id === id) || books.find((b) => b.id === id);
-
-    setBook(foundBook);
-
-    // Load reviews from localStorage
+  // Load reviews from localStorage
+  useEffect(() => {
     const savedReviews = JSON.parse(localStorage.getItem(`reviews-${id}`)) || [];
     setReviews(savedReviews);
-  }, [id, books]); // Now listens to `books` changes
+  }, [id]);
 
   // Function to Add Review
   const handleAddReview = () => {
-    if (!reviewText.trim()) return;
+    if (!reviewText.trim()) {
+      alert("Review cannot be empty!");
+      return;
+    }
 
     const newReview = {
       text: reviewText,
@@ -46,7 +45,7 @@ function BookDetail() {
     setReviewText("");
   };
 
-  if (!book) return <p>❌ Book not found!</p>;
+  if (!book) return <p>Loading book details...</p>;
 
   return (
     <div className="book-detail">
@@ -68,7 +67,7 @@ function BookDetail() {
           <p>No reviews yet. Be the first to add one!</p>
         )}
 
-        {/* Review Input (Only Logged-in Users Can Add) */}
+        {/* Review Input */}
         {user ? (
           <div className="add-review">
             <textarea
