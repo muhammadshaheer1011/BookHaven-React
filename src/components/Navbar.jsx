@@ -7,13 +7,19 @@ function Navbar() {
   return (
     <nav className="navbar">
       <h1>BookHaven</h1>
-      <div>
+      <div className="nav-links">
         <Link to="/">Home</Link>
-        <Link to="/favorites">Favorites</Link>
+        {user && <Link to="/favorites">Favorites</Link>}
+
+        {/* If user is logged in, show red Logout button */}
         {user ? (
-          <button onClick={logout}>Logout</button>
+          <button className="nav-button nav-logout" onClick={logout}>
+            Logout
+          </button>
         ) : (
-          <Link to="/login">Login</Link>
+          <Link to="/login" className="nav-button nav-login">
+            Login
+          </Link>
         )}
       </div>
     </nav>

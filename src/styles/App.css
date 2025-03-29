@@ -1,4 +1,6 @@
+/* ========================= */
 /* General Styles */
+/* ========================= */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -7,7 +9,9 @@ body {
   color: #333;
 }
 
+/* ========================= */
 /* Navbar */
+/* ========================= */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -19,28 +23,63 @@ body {
 
 .navbar h1 {
   margin: 0;
+  font-size: 1.8rem;
 }
 
-.navbar a {
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Links inside navbar */
+.nav-links a {
   color: white;
   text-decoration: none;
-  margin-left: 15px;
-}
-
-.navbar button {
-  background-color: #ff4d4d;
-  border: none;
+  font-weight: bold;
   padding: 8px 12px;
-  cursor: pointer;
-  color: white;
+  background: transparent;
   border-radius: 5px;
+  transition: 0.3s;
 }
 
-.navbar button:hover {
-  background-color: #cc0000;
+.nav-links a:hover {
+  text-decoration: underline;
 }
 
+/* Default Login Button (White Before Login) */
+.nav-button {
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.nav-login {
+  background: white;
+  color: #0073e6;
+}
+
+.nav-login:hover {
+  background: #005bb5;
+  color: white;
+}
+
+/* Logout Button (Red After Login) */
+.nav-logout {
+  background: #ff4d4d;
+  color: white;
+}
+
+.nav-logout:hover {
+  background: #cc0000;
+}
+
+/* ========================= */
 /* Book List */
+/* ========================= */
 .book-list {
   display: flex;
   flex-wrap: wrap;
@@ -49,14 +88,21 @@ body {
   margin-top: 20px;
 }
 
+/* ========================= */
 /* Book Card */
+/* ========================= */
 .book-card {
   background: white;
   padding: 15px;
   border-radius: 5px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  width: 200px;
+  width: 220px;
   text-align: center;
+  transition: 0.3s;
+}
+
+.book-card:hover {
+  box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.15);
 }
 
 .book-card h2 {
@@ -74,34 +120,48 @@ body {
   text-decoration: none;
   background: #0073e6;
   color: white;
-  padding: 5px;
+  padding: 8px;
   margin-top: 10px;
   border-radius: 3px;
 }
 
+.book-card a:hover {
+  background: #005bb5;
+}
+
+/* Favorite Button */
 .book-card button {
   background: #ffa500;
   border: none;
-  padding: 5px 10px;
+  padding: 6px 12px;
   cursor: pointer;
   margin-top: 5px;
   border-radius: 5px;
+  font-weight: bold;
 }
 
 .book-card button:hover {
   background: #cc8400;
 }
 
+/* ========================= */
 /* Search Box */
+/* ========================= */
+.search-box {
+  text-align: center;
+  margin: 20px 0;
+}
+
 input[type="text"] {
   width: 60%;
-  padding: 8px;
-  margin: 15px;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
+/* ========================= */
 /* Forms */
+/* ========================= */
 form {
   display: flex;
   flex-direction: column;
@@ -114,8 +174,8 @@ form {
 }
 
 form input {
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: 10px;
+  margin-bottom: 12px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
@@ -123,7 +183,7 @@ form input {
 form button {
   background: #0073e6;
   color: white;
-  padding: 8px;
+  padding: 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -131,4 +191,106 @@ form button {
 
 form button:hover {
   background: #005bb5;
+}
+
+/* ========================= */
+/* Login Page */
+/* ========================= */
+.login-container {
+  max-width: 400px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-hints {
+  background: #f8f8f8;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.login-hints p {
+  margin: 5px 0;
+}
+
+/* ========================= */
+/* Buttons */
+/* ========================= */
+button {
+  background: #0073e6;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #005bb5;
+}
+
+/* ========================= */
+/* Review Section */
+/* ========================= */
+.review-section {
+  margin-top: 20px;
+  padding: 15px;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.review-list {
+  list-style: none;
+  padding: 0;
+}
+
+.review-list li {
+  background: #f8f8f8;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+
+.review-form input,
+.review-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* ========================= */
+/* Responsive Design */
+/* ========================= */
+@media (max-width: 600px) {
+  .navbar {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .nav-links {
+    margin-top: 10px;
+    gap: 10px;
+  }
+
+  .book-list {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .book-card {
+    width: 90%;
+  }
+
+  input[type="text"] {
+    width: 90%;
+  }
 }
