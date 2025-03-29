@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 function Login() {
   const { login } = useAuth();
+  const navigate = useNavigate(); // Initialize navigate function
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,7 +17,13 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    login(username, password);
+    const success = login(username, password);
+    
+    if (success) {
+      navigate("/"); // Redirect to Home page after successful login
+    } else {
+      alert("Invalid username or password!"); // Show an error message
+    }
   };
 
   return (
