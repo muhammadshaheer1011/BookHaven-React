@@ -4,22 +4,19 @@ const BookContext = createContext();
 
 export function BookProvider({ children }) {
   const [books, setBooks] = useState([]);
+  const [favorites, setFavorites] = useState([]);
 
-  // Load books from localStorage OR use initial hardcoded books
+  // Load books & favorites from localStorage on first render
   useEffect(() => {
-    const storedBooks = JSON.parse(localStorage.getItem("books"));
-    
-    if (storedBooks && storedBooks.length > 0) {
-      setBooks(storedBooks);
-    } else {
-      const defaultBooks = [
-        { id: "1", title: "The Great Gatsby", author: "F. Scott Fitzgerald", description: "A classic novel set in the Roaring Twenties." },
-        { id: "2", title: "To Kill a Mockingbird", author: "Harper Lee", description: "A novel about racial injustice in the Deep South." },
-        { id: "3", title: "1984", author: "George Orwell", description: "A dystopian novel about totalitarian government control." },
-      ];
-      setBooks(defaultBooks);
-      localStorage.setItem("books", JSON.stringify(defaultBooks));
-    }
+    const storedBooks = JSON.parse(localStorage.getItem("books")) || [
+      { id: "1", title: "The Great Gatsby", author: "F. Scott Fitzgerald", description: "A classic novel set in the Roaring Twenties." },
+      { id: "2", title: "To Kill a Mockingbird", author: "Harper Lee", description: "A novel about racial injustice in the Deep South." },
+      { id: "3", title: "1984", author: "George Orwell", description: "A dystopian novel about totalitarian government control." },
+    ];
+    setBooks(storedBooks);
+
+    const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    setFavorites(storedFavorites);
   }, []);
 
   // Function to add a new book with validation
@@ -31,13 +28,26 @@ export function BookProvider({ children }) {
 
     const newBook = { id: Date.now().toString(), title, author, description };
     const updatedBooks = [...books, newBook];
-    
+
     setBooks(updatedBooks);
     localStorage.setItem("books", JSON.stringify(updatedBooks));
   };
 
+  // Function to toggle favorites
+  const toggleFavorite = (bookId) => {
+    let updatedFavorites;
+    if (favorites.includes(bookId)) {
+      updatedFavorites = favorites.filter((id) => id !== bookId);
+    } else {
+      updatedFavorites = [...favorites, bookId];
+    }
+
+    setFavorites(updatedFavorites);
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+  };
+
   return (
-    <BookContext.Provider value={{ books, addBook }}>
+    <BookContext.Provider value={{ books, addBook, favorites, toggleFavorite }}>
       {children}
     </BookContext.Provider>
   );
