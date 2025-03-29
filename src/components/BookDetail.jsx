@@ -1,27 +1,33 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useBook } from "../context/BookContext"; // Import Book Context
 
 function BookDetail() {
   const { id } = useParams();
-  const { user } = useAuth(); // Get logged-in user
+  const { user } = useAuth();
+  const { books } = useBook(); // Get books from context
   const [book, setBook] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [reviewText, setReviewText] = useState("");
 
-  // Load book details (Mock Data - Replace with real API if needed)
+  // Fetch Book Details
   useEffect(() => {
     const mockBooks = [
-      { id: "1", title: "The Great Gatsby", author: "F. Scott Fitzgerald" },
-      { id: "2", title: "To Kill a Mockingbird", author: "Harper Lee" },
+      { id: "1", title: "The Great Gatsby", author: "F. Scott Fitzgerald", description: "A classic novel set in the Roaring Twenties." },
+      { id: "2", title: "To Kill a Mockingbird", author: "Harper Lee", description: "A novel about racial injustice in the Deep South." },
+      { id: "3", title: "1984", author: "George Orwell", description: "A dystopian novel about totalitarian government control." },
     ];
-    const foundBook = mockBooks.find((b) => b.id === id);
+
+    // First check in mockBooks, then check in added books
+    let foundBook = mockBooks.find((b) => b.id === id) || books.find((b) => b.id === id);
+
     setBook(foundBook);
 
     // Load reviews from localStorage
     const savedReviews = JSON.parse(localStorage.getItem(`reviews-${id}`)) || [];
     setReviews(savedReviews);
-  }, [id]);
+  }, [id, books]); // Now listens to `books` changes
 
   // Function to Add Review
   const handleAddReview = () => {
@@ -40,12 +46,13 @@ function BookDetail() {
     setReviewText("");
   };
 
-  if (!book) return <p>Loading book details...</p>;
+  if (!book) return <p>❌ Book not found!</p>;
 
   return (
     <div className="book-detail">
       <h2>{book.title}</h2>
-      <p>Author: {book.author}</p>
+      <p><strong>Author:</strong> {book.author}</p>
+      <p><strong>Description:</strong> {book.description}</p>
 
       {/* Reviews Section */}
       <div className="reviews-section">
@@ -61,7 +68,7 @@ function BookDetail() {
           <p>No reviews yet. Be the first to add one!</p>
         )}
 
-        {/* Review Input (Everyone Can See Reviews, Only Logged-in Users Can Add) */}
+        {/* Review Input (Only Logged-in Users Can Add) */}
         {user ? (
           <div className="add-review">
             <textarea
