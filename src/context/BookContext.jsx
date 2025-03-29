@@ -1,12 +1,14 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { useAuth } from "./AuthContext"; // Import AuthContext
 
 const BookContext = createContext();
 
 export function BookProvider({ children }) {
+  const { user } = useAuth(); // Get the logged-in user
   const [books, setBooks] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
-  // Load books & favorites from localStorage on first render
+  // Load books from localStorage OR use initial hardcoded books
   useEffect(() => {
     const storedBooks = JSON.parse(localStorage.getItem("books")) || [
       { id: "1", title: "The Great Gatsby", author: "F. Scott Fitzgerald", description: "A classic novel set in the Roaring Twenties." },
@@ -14,12 +16,19 @@ export function BookProvider({ children }) {
       { id: "3", title: "1984", author: "George Orwell", description: "A dystopian novel about totalitarian government control." },
     ];
     setBooks(storedBooks);
-
-    const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-    setFavorites(storedFavorites);
   }, []);
 
-  // Function to add a new book with validation
+  // Load user's favorites when they log in
+  useEffect(() => {
+    if (user) {
+      const storedFavorites = JSON.parse(localStorage.getItem(`favorites-${user.username}`)) || [];
+      setFavorites(storedFavorites);
+    } else {
+      setFavorites([]); // Reset favorites when logged out
+    }
+  }, [user]);
+
+  // Function to add a new book
   const addBook = (title, author, description) => {
     if (!title.trim() || !author.trim() || !description.trim()) {
       alert("All fields are required!");
@@ -33,8 +42,13 @@ export function BookProvider({ children }) {
     localStorage.setItem("books", JSON.stringify(updatedBooks));
   };
 
-  // Function to toggle favorites
+  // Function to toggle favorites (Only if user is logged in)
   const toggleFavorite = (bookId) => {
+    if (!user) {
+      alert("You must be logged in to add favorites!");
+      return;
+    }
+
     let updatedFavorites;
     if (favorites.includes(bookId)) {
       updatedFavorites = favorites.filter((id) => id !== bookId);
@@ -43,7 +57,7 @@ export function BookProvider({ children }) {
     }
 
     setFavorites(updatedFavorites);
-    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    localStorage.setItem(`favorites-${user.username}`, JSON.stringify(updatedFavorites));
   };
 
   return (
